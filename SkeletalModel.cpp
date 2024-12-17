@@ -32,7 +32,7 @@ void SkeletalModel::draw(Matrix4f cameraMatrix, bool skeletonVisible)
 	else
 	{
 		// Clear out any weird matrix we may have been using for drawing the bones and revert to the camera matrix.
-		glLoadMatrixf(m_matrixStack.top());
+		glLoadMatrixf(m_matrixStack.top().getElements());
 
 		// Tell the mesh to draw itself.
 		m_mesh.draw();

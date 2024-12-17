@@ -6,10 +6,10 @@ INCFLAGS  = -I /usr/include/GL
 INCFLAGS += -I /usr/include/vecmath
 #INCFLAGS += -I ~/vecmath/include
 
-LINKFLAGS  = -lglut -lGL -lGLU
+LINKFLAGS  = -lglut -lGL
 LINKFLAGS += -L /usr/lib -lvecmath
 #LINKFLAGS += -L ~/vecmath/lib -lvecmath
-LINKFLAGS += -lfltk -lfltk_gl
+LINKFLAGS += -lfltk -lfltk_gl -lX11 -ldl -lXft -lfontconfig -lXrender -lXcursor -lXinerama -lXfixes -lpthread -lGLU
 
 CFLAGS    = -g
 CFLAGS    += -DSOLN

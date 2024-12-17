@@ -157,7 +157,7 @@ void ModelerView::draw()
         glMatrixMode( GL_PROJECTION );
         glLoadIdentity();
         m_camera->SetPerspective( 50.0f );
-        glLoadMatrixf( m_camera->projectionMatrix() );
+        glLoadMatrixf( m_camera->projectionMatrix().getElements() );
     }
         
     glMatrixMode( GL_MODELVIEW );
@@ -182,7 +182,7 @@ void ModelerView::draw()
     glMaterialfv( GL_FRONT_AND_BACK, GL_SHININESS, shininess );
 
     // Load the camera view matrix
-	glLoadMatrixf( m_camera->viewMatrix() );
+	glLoadMatrixf( m_camera->viewMatrix().getElements() );
 
     if(m_drawAxes)
     {
