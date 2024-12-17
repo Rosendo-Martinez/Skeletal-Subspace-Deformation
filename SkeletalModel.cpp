@@ -1,6 +1,8 @@
 #include "SkeletalModel.h"
 
 #include <FL/Fl.H>
+#include <fstream>  // For file I/O
+#include <string>   // For std::string
 
 using namespace std;
 
@@ -42,6 +44,54 @@ void SkeletalModel::draw(Matrix4f cameraMatrix, bool skeletonVisible)
 void SkeletalModel::loadSkeleton( const char* filename )
 {
 	// Load the skeleton from file here.
+
+	std::ifstream inputFile(filename);
+	if (!inputFile) 
+	{
+        std::cerr << "Error: File could not be opened [in loadSkeleton()]!" << std::endl;
+        return;
+    }
+
+	float x, y, z;
+	int i;
+
+	// root joint
+	{
+		inputFile >> x >> y >> z >> i;
+
+		Joint *root = new Joint();
+		
+		// Translation (relative to global)
+		root->transform = Matrix4f(
+			1, 0, 0, x,
+			0, 1, 0, y,
+			0, 0, 1, z,
+			0, 0, 0, 1
+		);
+
+		m_joints.push_back(root);
+		m_rootJoint = root;
+	}
+
+	// rest of joints
+	while (inputFile >> x >> y >> z >> i)
+	{		
+		Joint *joint = new Joint();
+		
+		// Translation (relative to parent)
+		joint->transform = Matrix4f(
+			1, 0, 0, x,
+			0, 1, 0, y,
+			0, 0, 1, z,
+			0, 0, 0, 1
+		);
+
+		// Add to parent
+		m_joints[i]->children.push_back(joint);
+
+		// Add to list of joints
+		m_joints.push_back(joint);
+	}
 }
 
 void SkeletalModel::drawJoints( )
