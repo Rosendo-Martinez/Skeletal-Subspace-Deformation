@@ -3,6 +3,7 @@
 #include <FL/Fl.H>
 #include <fstream>  // For file I/O
 #include <string>   // For std::string
+#include <iostream> // degugging
 
 using namespace std;
 
@@ -10,11 +11,16 @@ void SkeletalModel::load(const char *skeletonFile, const char *meshFile, const c
 {
 	loadSkeleton(skeletonFile);
 
+
 	m_mesh.load(meshFile);
 	m_mesh.loadAttachments(attachmentsFile, m_joints.size());
 
 	computeBindWorldToJointTransforms();
 	updateCurrentJointToWorldTransforms();
+
+	cout << "m_joints.size: " << m_joints.size() << '\n';
+	cout << "root transformation:\n";
+	m_rootJoint->transform.print();
 }
 
 void SkeletalModel::draw(Matrix4f cameraMatrix, bool skeletonVisible)
