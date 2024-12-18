@@ -1,12 +1,44 @@
 #include "Mesh.h"
+#include <fstream>
+#include <sstream>
+#include <string>
 
 using namespace std;
 
 void Mesh::load( const char* filename )
 {
 	// 2.1.1. load() should populate bindVertices, currentVertices, and faces
+	
+	std::ifstream inputFile(filename);
+	if (!inputFile) 
+	{
+        std::cerr << "Error: File could not be opened [in Mesh::load()]!" << std::endl;
+        return;
+    }
 
-	// Add your code here.
+	std::string line;
+	while (std::getline(inputFile, line))
+	{
+		std::istringstream iss(line);
+
+		char type;
+
+		if (type == 'v') // vertex
+		{
+			float x, y, z;
+			iss >> x >> y >> z;
+
+			bindVertices.push_back(Vector3f(x,y,z));
+		}
+		else // face
+		{
+			unsigned int i, j, k; // one-index
+			iss >> i >> j >> k;
+
+			// Make zero-index based 
+			faces.push_back(Tuple3u(i - 1, j - 1, k - 1));
+		}
+	}
 
 	// make a copy of the bind vertices as the current vertices
 	currentVertices = bindVertices;
