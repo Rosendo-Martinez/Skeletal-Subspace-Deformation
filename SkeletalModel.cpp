@@ -100,6 +100,25 @@ void SkeletalModel::loadSkeleton( const char* filename )
 	}
 }
 
+void drawJointsHelper(const Joint* joint, MatrixStack& stack)
+{
+	// Set up joint frame
+	stack.push(joint->transform);
+	glLoadMatrixf(stack.top().getElements());
+
+	// Draw joint
+	glutSolidSphere(0.025f,12,12);
+
+	// Draw children
+	for (const Joint* child : joint->children)
+	{
+		drawJointsHelper(child, stack);
+	}
+
+	// Remove joint frame
+	stack.pop();
+}
+
 void SkeletalModel::drawJoints( )
 {
 	// Draw a sphere at each joint. You will need to add a recursive helper function to traverse the joint hierarchy.
@@ -111,6 +130,11 @@ void SkeletalModel::drawJoints( )
 	// (glPushMatrix, glPopMatrix, glMultMatrix).
 	// You should use your MatrixStack class
 	// and use glLoadMatrix() before your drawing call.
+
+	if (m_rootJoint != nullptr)
+	{
+		drawJointsHelper(m_rootJoint, m_matrixStack);
+	}
 }
 
 void SkeletalModel::drawSkeleton( )
