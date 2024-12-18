@@ -144,19 +144,10 @@ void drawSkeletonHelper(const Joint* joint, MatrixStack& stack, const Vector3f& 
 
 	// set up joint frame
 	stack.push(joint->transform);
-
-	// draw box
-		// this is a bit complicated, but:
-
-		// add cube transformations
-		// draw the cube
-		// pop cube transformations
 	
-	// not root
+	// if NOT root, then draw bone that connects this joint to parent joint
 	if (parentOffset != Vector3f(0,0,0))
 	{
-		// draw the bone (actually a stretched cube)
-
 		// Drawing the stretched cube is a bit complicated due 
 		// to glut only drawing cubes centered at the origin.
 		// Thus, the coordinate system needs to be transformed
@@ -178,13 +169,12 @@ void drawSkeletonHelper(const Joint* joint, MatrixStack& stack, const Vector3f& 
 			0,     0,     0,     1
 		));
 
-		// Scalar (S)
-		// Scale z axis by half the parent offset
+		// Scala (S)
 		stack.push(Matrix4f(
-			1, 0, 0,                    0,
-			0, 1, 0,                    0,
-			0, 0, parentOffset.abs()/2, 0,
-			0, 0, 0,                    1
+			0.025, 0,     0,                  0,
+			0,     0.025, 0,                  0,
+			0,     0,     parentOffset.abs(), 0,
+			0,     0,     0,                  1
 		));
 
 		// Translation (T)
@@ -192,12 +182,12 @@ void drawSkeletonHelper(const Joint* joint, MatrixStack& stack, const Vector3f& 
 		stack.push(Matrix4f(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
-			0, 0, 1, 1,
+			0, 0, 1, 0.5,
 			0, 0, 0, 1
 		));
 
 		// R * S * T will transform the frame, so that 
-		// the bone (stretched cube) will be drawn correctly between
+		// the bone will be drawn correctly between
 		// this joint and the parent joint.
 		
 		// set special frame for drawing bone
