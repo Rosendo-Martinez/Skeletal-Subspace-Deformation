@@ -22,6 +22,7 @@ void Mesh::load( const char* filename )
 		std::istringstream iss(line);
 
 		char type;
+		iss >> type;
 
 		if (type == 'v') // vertex
 		{
