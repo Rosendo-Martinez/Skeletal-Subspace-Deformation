@@ -52,6 +52,28 @@ void Mesh::draw()
 	// Notice that since we have per-triangle normals
 	// rather than the analytical normals from
 	// assignment 1, the appearance is "faceted".
+
+	// iterate over triangles (faces)
+	for (const Tuple3u& f : faces)
+	{
+		// Vertices of triangle
+		const Vector3f A = currentVertices[f[0]];
+		const Vector3f B = currentVertices[f[1]];
+		const Vector3f C = currentVertices[f[2]];
+
+		// calculate normal
+		const Vector3f normal = Vector3f::cross(B - A, C - A).normalized();
+		
+		// Draw triangle
+		glBegin(GL_TRIANGLES);
+		glNormal3d(normal.x(), normal.y(), normal.z());
+		glVertex3d(A.x(), A.y(), A.z());
+		glNormal3d(normal.x(), normal.y(), normal.z());
+		glVertex3d(B.x(), B.y(), B.z());
+		glNormal3d(normal.x(), normal.y(), normal.z());
+		glVertex3d(C.x(), C.y(), C.z());
+		glEnd();
+	}
 }
 
 void Mesh::loadAttachments( const char* filename, int numJoints )
