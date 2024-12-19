@@ -215,6 +215,19 @@ void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float 
 	m_joints[jointIndex]->transform.setSubmatrix3x3(0,0, Matrix3f::rotateX(rX) * Matrix3f::rotateY(rY) * Matrix3f::rotateZ(rZ));
 }
 
+void computeBindWorldToJointTransformsHelper(Joint* joint, MatrixStack& stack)
+{
+	stack.push(joint->transform);
+
+	joint->bindWorldToJointTransform = stack.top().inverse();
+
+	for (Joint* child : joint->children)
+	{
+		computeBindWorldToJointTransformsHelper(child, stack);
+	}
+
+	stack.pop();
+}
 
 void SkeletalModel::computeBindWorldToJointTransforms()
 {
@@ -226,6 +239,12 @@ void SkeletalModel::computeBindWorldToJointTransforms()
 	//
 	// This method should update each joint's bindWorldToJointTransform.
 	// You will need to add a recursive helper function to traverse the joint hierarchy.
+	MatrixStack stack;
+
+	if (m_rootJoint != nullptr)
+	{
+		computeBindWorldToJointTransformsHelper(m_rootJoint, stack);
+	}
 }
 
 void SkeletalModel::updateCurrentJointToWorldTransforms()
@@ -238,6 +257,7 @@ void SkeletalModel::updateCurrentJointToWorldTransforms()
 	//
 	// This method should update each joint's bindWorldToJointTransform.
 	// You will need to add a recursive helper function to traverse the joint hierarchy.
+
 }
 
 void SkeletalModel::updateMesh()
