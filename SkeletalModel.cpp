@@ -247,6 +247,24 @@ void SkeletalModel::computeBindWorldToJointTransforms()
 	}
 }
 
+void updateCurrentJointToWorldTransformsHelper(Joint * joint, MatrixStack& stack)
+{
+	stack.push(joint->transform);
+
+	joint->currentJointToWorldTransform = stack.top();
+
+	for (Joint* child : joint->children)
+	{
+		updateCurrentJointToWorldTransformsHelper(child, stack);
+	}
+
+	// Quick test:
+	// If still in initial bind pose, then should print the identity matrix.
+	// (joint->currentJointToWorldTransform * joint->bindWorldToJointTransform).print();
+
+	stack.pop();	
+}
+
 void SkeletalModel::updateCurrentJointToWorldTransforms()
 {
 	// 2.3.2. Implement this method to compute a per-joint transform from
@@ -258,6 +276,11 @@ void SkeletalModel::updateCurrentJointToWorldTransforms()
 	// This method should update each joint's bindWorldToJointTransform.
 	// You will need to add a recursive helper function to traverse the joint hierarchy.
 
+	cout << "Should only see I matrices printed!\n";
+	if (m_rootJoint != nullptr)
+	{
+		updateCurrentJointToWorldTransformsHelper(m_rootJoint, m_matrixStack);
+	}
 }
 
 void SkeletalModel::updateMesh()
