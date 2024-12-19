@@ -276,6 +276,9 @@ void SkeletalModel::updateCurrentJointToWorldTransforms()
 	// This method should update each joint's bindWorldToJointTransform.
 	// You will need to add a recursive helper function to traverse the joint hierarchy.
 
+	// Clear camera matrix
+	m_matrixStack.clear();
+
 	cout << "Should only see I matrices printed!\n";
 	if (m_rootJoint != nullptr)
 	{
