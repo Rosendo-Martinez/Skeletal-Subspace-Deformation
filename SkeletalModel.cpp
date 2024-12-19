@@ -290,5 +290,32 @@ void SkeletalModel::updateMesh()
 	// given the current state of the skeleton.
 	// You will need both the bind pose world --> joint transforms.
 	// and the current joint --> world transforms.
+
+	const std::vector<Vector3f>& bindVertices = m_mesh.bindVertices;
+	std::vector<Vector3f>& currentVertices = m_mesh.currentVertices;
+
+	for (unsigned i = 0; i < bindVertices.size(); i++)
+	{
+		// Current vertex (v)
+		const Vector3f& v = bindVertices[i];
+		Vector3f weightedPostionOfVertex(0,0,0);
+		// Weights for current vertex
+		const vector<float>& weights = m_mesh.attachments[i];
+
+		// for (const Joint* joint : m_joints)
+		for (unsigned j = 0; j < m_joints.size(); j++)
+		{
+			const Joint* joint = m_joints[j];
+			// Bind pose world to joint (B)
+			const Matrix4f& B = joint->bindWorldToJointTransform;
+			// Current pose joint to world (T)
+			const Matrix4f& T = joint->currentJointToWorldTransform;
+
+			// += T * B * v
+			weightedPostionOfVertex += weights[j] * ((T * B) * Vector4f(v,1)).xyz();
+		}
+
+		currentVertices[i] = weightedPostionOfVertex;
+	}
 }
 
